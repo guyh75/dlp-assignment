@@ -36,10 +36,7 @@ public class ValidationController {
         /**
          * I've implemented a naive approach for reading files due to lack of time.
          * I thought of a scenario of reading large files.
-         * Maybe it is better to read the file in splits/batches, and process each split.
-         * The splits may overlap a bit, so we take care of edge cases where a sensitive data token
-         * or keyword is cut between splits.
-         * Also, there might be optimization of collecting the sensitive data tokens & context keywords,
+         * Maybe it is better to read the file in chunks, and process each chunk.
          * and checking them incrementally, so we don't need to scan the entire file if we find DLP contents
          */
 
