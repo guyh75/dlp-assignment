@@ -2,19 +2,15 @@ package assignment.proofpoint.dlp.controllers;
 
 import assignment.proofpoint.dlp.api.ScanResult;
 import assignment.proofpoint.dlp.converters.ValidationResultsToApiResultConverter;
-import assignment.proofpoint.dlp.service.FileReadException;
 import assignment.proofpoint.dlp.service.FileService;
 import assignment.proofpoint.dlp.service.ValidationService;
 import assignment.proofpoint.dlp.validators.ValidationResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.file.NoSuchFileException;
 import java.util.List;
 
 @RestController
@@ -39,16 +35,8 @@ public class ValidationController {
          * Maybe it is better to read the file in chunks, and process each chunk.
          * and checking them incrementally, so we don't need to scan the entire file if we find DLP contents
          */
-
-        try {
-            String content = fileService.getContent(path);
-            List<ValidationResult> validationErrors = validationService.validate(content);
-            return converter.apply(validationErrors);
-        } catch (FileReadException e) {
-            if(e.getCause() instanceof NoSuchFileException) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-            }
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+        String content = fileService.getContent(path);
+        List<ValidationResult> validationErrors = validationService.validate(content);
+        return converter.apply(validationErrors);
     }
 }
